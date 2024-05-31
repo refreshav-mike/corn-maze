@@ -22,6 +22,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.greenSwitchUp, function (
     tiles.setTileAt(location, assets.tile`myTile`)
     tiles.setWallAt(location, true)
     info.changeScoreBy(-1)
+    levers += 1
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -45,17 +46,15 @@ function levelSelector (level: number) {
         tiles.setTilemap(tilemap`maze_impossible`)
         tiles.placeOnRandomTile(player2, assets.tile`EntranceEast`)
     } else if (level == 4) {
+        music.play(music.stringPlayable("G B A G C5 B A B ", 120), music.PlaybackMode.LoopingInBackground)
         tiles.setTilemap(tilemap`undergroundLevel`)
         tiles.placeOnRandomTile(player2, sprites.dungeon.floorLightMoss)
         info.setScore(4)
         levers = 0
-        if (info.score() == 0) {
-            game.splash("In the distance, you hear a hatch appear.")
-        }
     } else if (level == 5) {
         tiles.setTilemap(tilemap`level7`)
-        tiles.placeOnRandomTile(player2, sprites.dungeon.floorLightMoss)
-        game.splash("You need to find the 12 orbs as quick as possible!", "They'll be the secret ingredient for the apple blossom potluck!")
+        tiles.placeOnRandomTile(player2, assets.tile`myTile1`)
+        game.splash("You need to find the 10 orbs as quick as possible!", "They'll be the secret ingredient for the apple blossom potluck!")
         info.setScore(10)
     }
 }
@@ -276,13 +275,17 @@ if (true) {
     currentLevel = 0
     levelSelector(currentLevel)
     scene.cameraFollowSprite(player2)
+    music.play(music.stringPlayable("E B C5 A B G A F ", 120), music.PlaybackMode.LoopingInBackground)
 }
 forever(function () {
-    music.play(music.stringPlayable("E B C5 A B G A F ", 120), music.PlaybackMode.UntilDone)
     if (info.score() < 1) {
         tiles.setTileAt(tiles.getTileLocation(52, 53), assets.tile`myTile0`)
         tiles.setTileAt(tiles.getTileLocation(53, 53), assets.tile`myTile0`)
         tiles.setTileAt(tiles.getTileLocation(76, 98), assets.tile`myTile1`)
         tiles.setTileAt(tiles.getTileLocation(77, 98), assets.tile`myTile1`)
+    }
+    if (levers == 4) {
+        game.splash("In the distance, you hear a hatch appear.")
+        levers += -1
     }
 })
